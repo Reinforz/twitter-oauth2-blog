@@ -1,0 +1,43 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Server for imodit",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "build": "tsc --sourceMap false",
+    "build:watch": "tsc -w",
+    "start:watch": "nodemon dist/index.js",
+    "dev": "concurrently \"yarn build:watch\" \"yarn start:watch\" --names \"tsc,node\" -c \"blue,green\"",
+    "test": "jest",
+    "prisma-mig": "prisma migrate dev",
+    "prisma-gen": "prisma generate"
+  },
+  "keywords": [
+    "graphql",
+    "backend"
+  ],
+  "author": "imoxto",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^4.3.1",
+    "argon2": "^0.29.1",
+    "axios": "^1.1.2",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.3",
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/jsonwebtoken": "^8.5.9",
+    "@types/node": "^18.7.18",
+    "concurrently": "^7.3.0",
+    "nodemon": "^2.0.19",
+    "prisma": "^4.3.1",
+    "typescript": "^4.8.3"
+  }
+}
