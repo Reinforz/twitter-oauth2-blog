@@ -22,18 +22,18 @@
   - [Conclusion](#conclusion)
 
 ## What will we learn
-Here, we will learn to implement authentication using twitter oauth 2.0 on a minimal working full stack web application. We will not be using passport or any other similar libraries to handle authentication for us and as a result we will understand the oauth 2.0 flow better. We will also learn about the following stacks:
+Here, we will learn to implement authentication using Twitter OAuth 2.0 on a minimal working full-stack web application. We will not be using Passport.js or similar libraries to handle authentication for us. As a result, we will understand the OAuth 2.0 flow better. We will also learn about the following stacks:
 - [express.js] backend framework
-- [prisma] to create and login users, you can really use anything to cummunicate with any type of database.
+- [prisma] to create and login users, you can really use anything to communicate with any database.
 - [next.js] for the frontend
-- [typescript] (optional) typesafety for javascript
+- [typescript] (optional) type-safety for javascript
 
 ## Requirements
 Anyone with a basic knowledge of javascript can follow along with this blog.
-You can also jump straight to the [Twitter Oauth2 Implementation](#twitter-oauth2-implementation) section if you already have a similar project setup.
+If you already have a similar project setup, you can also jump straight to the [Twitter OAuth2 Implementation](#twitter-oauth2-implementation) section.
 
 ## Project Setup
-Firstly, lets add a `package.json` file at root and add the following content:
+Firstly, let's add a `package.json` file at the root directory and add the following content:
 
 ```json
 {
@@ -51,15 +51,15 @@ Firstly, lets add a `package.json` file at root and add the following content:
   }
 }
 ```
-You can setup version control in this directory but that is optional. Eitherway, we will add client and server for our web app now.
+You can set up version control in this directory, but that is optional. Either way, we will now add a client and server for our web app.
 ### Client setup
-Make a Next.js app by running:
+Make a Next.js app by running the following commands:
 ```bash
 yarn create next-app --typescript client
 ```
-Skip the `--typescript` flag if you just want to work with javascript.
+Skip the `--typescript` flag if you want to work with javascript.
 
-This will create a `client` folder in the project directory. Navigate there and delete the files we dont need, i.e. `client\styles\Home.module.css` and `client\pages\api`. Also, lets replace all the code in `client\pages\index.ts` with the following:
+This will create a `client` folder in the project directory. Navigate there and delete the files we don't need, i.e. `client\styles\Home.module.css` and `client\pages\api`. Also, let's replace all the code in `client\pages\index.ts` with the following:
 ```ts
 import { NextPage } from "next";
 
@@ -77,10 +77,10 @@ Starting the client with our command `yarn client:dev` and going to the address 
 
 <img src='images/1.png'>
 
-Now that the frontend is setup lets move on to our backend.
+Now that the frontend is set up, let's move on to our backend.
 
 ### Server setup
-Make directory called `server` and make a `package.json` file there with the following content:
+Make a directory called `server` and make a `package.json` file in the project directory with the following content:
 ```json
 {
   "name": "server",
@@ -96,7 +96,7 @@ Make directory called `server` and make a `package.json` file there with the fol
   }
 }
 ```
-Here we added various scripts to helps us in our development stage. We will mostly use the `dev` and the `migrate-db` scripts. They start the server in watch mode and lets us migrate the database respectively. Now we can return to the workspace directory and just use our `yarn server:add` to add packages. So its time to install the required dependencies using the following commands in the terminal:
+Here, we added various scripts to help us in our development stage. We will mostly use the `dev` and the `migrate-db` scripts. They allow us to start the server in watch mode and let us migrate the database respectively. Now we can return to the workspace directory and use our `yarn server:add` to add packages. So its time to install the required dependencies using the following commands in the terminal:
 ```bash
 yarn server:add @prisma/client argon2 axios cookie-parser cors dotenv express jsonwebtoken
 ```
@@ -201,30 +201,35 @@ After installing the dependencies we need, make a few files to have a minimal ru
     type     UserType @default(local)
   }
   ```
-Now migrate the database using the `yarn migrate-db` command and then we can run the server using `yarn server:dev`.
+Now migrate the database using the `yarn migrate-db` command, and then we can run the server using `yarn server:dev`.
 
 We should now be able to ping our server at http://localhost:3001/ping
 
 <img src='images/2.png'>
 
 ## Twitter Oauth2 Implementation
-Ok so now we are ready to implement authentication via Twitter Oauth 2.0 into our app. We are going to follow [this](https://developer.twitter.com/en/docs/authentication/oauth-2-0/authorization-code) approach to do so. 
-Firstly, we have to make an app on twitter.
+We are ready to implement authentication via Twitter OAuth 2.0 into our app. We will follow [this](https://developer.twitter.com/en/docs/authentication/oauth-2-0/authorization-code) approach to do so. 
+Firstly, we have to make an app on Twitter.
 ### Setup twitter user authentication settings
-Head over to [twitter's developer portal](https://developer.twitter.com/en/portal/dashboard) and make a project and a development app in the project with any name. Twitter will show you the things needed. It may take a few hours to get approval from twitter to make these apps. Eitherway, after we are done head over to the settings page of the app to set some necessary fields.
+Head over to [twitter's developer portal](https://developer.twitter.com/en/portal/dashboard) and make a project and a development app in the project with any name. Twitter will show you the things needed. It may take a few hours to get approval from Twitter to make these apps. Once it is done, head over to the settings page of the app to set some necessary fields.
 Set up or edit the user authentication as needed by your app.
+
 <img src='images/3.png'>
+
 As I only need to read profile information for this minimal web app, these are the settings I used:
+
 <img src='images/4.png'>
+
 <img src='images/5.png'>
-Save the twitter Client ID and client secret securely.
+
+Save the Twitter Client ID and client secret securely.
 > **Note**: http://www.localhost:3000 works but not http://localhost:3000. 
-> So, i added `www.` in both websites.
+> So, I added `www.` in both websites.
 
 ### Client
 #### Frontend authentication button
-Now we add the button in the client which will lead to our backend for authentication.
-Firstly, we need to get a valid twitter Oauth URL getter function and a button to go to the the url. 
+Now we add the button in the client, which will lead to our backend for authentication.
+To do so, we need to use a valid Twitter OAuth URL getter function and a button to go to the URL.
 ```ts
 import twitterIcon from "../public/twitter.svg";
 import Image from "next/image";
@@ -257,9 +262,8 @@ export function TwitterOauthButton() {
   );
 }
 ```
-Lets add the above code in `client\components\TwitterOauthButton.tsx`.
-Also add a twitter svg icon (from online resources like [this](https://icons8.com/icons/set/twitter)) on path `client\public\twitter.svg`.
-Then import the component in the homepage:
+After adding the above code in `client\components\TwitterOauthButton.tsx`, we will add a twitter svg icon (from online resources like [this](https://icons8.com/icons/set/twitter)) on path `client\public\twitter.svg`.
+Then we will import the component on the homepage:
 ```ts
 import { TwitterOauthButton } from "../components/TwitterOauthButton";
 
@@ -276,14 +280,14 @@ This is how it should look like afterwards:
 
 <img src='images/6.png'>
 
-Clicking on the image should lead us to the twitter page where we can authorize the app:
+Clicking on the Twitter icon will lead us to the Twitter page where we can authorize the app:
 
 <img src='images/6.5.png'>
 
-Of course cliecking on the `authorize app` button lead to a `Cannot GET /oauth/twitter` response as we havent implemented the backend yet.
+Of course clicking on the `authorize app` button lead to a `Cannot GET /oauth/twitter` response as we havent implemented the backend yet.
 
 #### Me query
-Lets request for the current logged in user from the frontend through a hook, `client\hooks\useMeQuery.ts`:
+Let's request for the current logged in user from the frontend through a hook, `client\hooks\useMeQuery.ts`:
 ```ts
 import { useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios";
@@ -316,8 +320,7 @@ export function useMeQuery() {
   return { error, data, loading };
 }
 ```
-This will do a good enough job for our minimal app. Lets use this to conditionally render the user if present, or otherwise, the login with twitter button:
-
+This will do a good enough job for our minimal app. We will use it to determine what to render. We will render the username if we get a user from the hook. Otherwise, we will render the `Login with Twitter` button
 ```ts
 import type { NextPage } from "next";
 import { TwitterOauthButton } from "../components/TwitterOauthButton";
@@ -406,19 +409,17 @@ Thats all we have to do on our client-side. The final homepage should look like 
 
 ### Server
 
-As we saw from our front end we need to implement `GET /oauth/twitter` route in our server to make the twitter oauth part of the app work
-
-A look at the [twitter documentation](https://developer.twitter.com/en/docs/authentication/oauth-2-0/user-access-token) reveals the step we need to perform so that we can read the info we mentioned in our scopes [here](#frontend-authentication-button).
-These are steps to have this route working
+As we saw from our frontend, we need to implement `GET /oauth/twitter` route in our server to make the Twitter OAuth part of the app work. A look at the [twitter documentation](https://developer.twitter.com/en/docs/authentication/oauth-2-0/user-access-token) reveals the steps we need to perform so that we can read the info we mentioned in our scopes [here](#frontend-authentication-button).
+These steps are summarized below:
 1. getting the access token
-2. getting the twitter user from the access token
-3. upsert the user in our db
+2. getting the Twitter user from the access token
+3. upsert the user in our database
 4. create cookie so that the server can validate the user
 5. redirect to the client with the cookie
    
-> **Note**: Only the first two steps is related to Twitter oauth Implementation
+> **Note**: Only the first two steps are related to Twitter OAuth Implementation
 
-Lets add a file `server\src\oauth2.ts` where we will add our oauth related codes. We will complete the steps above by defining a function there:
+Lets add a file `server\src\oauth2.ts` where we will add our OAuth related codes. We will complete the steps above by defining a function there:
 ```ts
 // the function which will be called when twitter redirects to the server at http://www.localhost:3001/oauth/twitter
 export async function twitterOauth(req: Request<any, any, any, {code:string}>, res: Response) {
@@ -533,7 +534,7 @@ export async function getTwitterUser(accessToken: string): Promise<TwitterUser |
 ```
 
 #### Checking if they work
-Lets see if they succesfully gets us the user. After adding all the code in the `server\src\oauth2.ts` file it should look like this:
+Let's see if they succesfully gets us the user. After adding all the code in the `server\src\oauth2.ts` file it should look like this:
 ```ts
 import { CLIENT_URL } from "./config";
 import axios from "axios";
@@ -654,15 +655,15 @@ app.get("/ping", (_, res) => res.json("pong"));
 app.get("/oauth/twitter", twitterOauth);
 app.listen(SERVER_PORT, () => console.log(`Server listening on port ${SERVER_PORT}`))
 ```
-Now run the client and server, and look at the server console on what happens if we click on the twitter button in the frontend and authorize the app.
+Now run the client and server, and look at the server console on what happens if we click on the Twitter button in the frontend and authorize the app.
 
 <img src='images/8.png'>
 
-We successfully got the user from twitter now!
-The most important part, i.e. getting the user from twitter, is done. Now we can finish up our project.
+We successfully got the user from Twitter now!
+The most important part, i.e. getting the user from Twitter, is done. Now we can finish up our project.
 
 ## Finishing the web app
-Lets finish up the rest of the steps need for `GET /oauth/twitter` to work. Since they are not related to oauth I will add the functions in the `server\src\config.ts` file.
+Let's finish up the rest of the steps needed for `GET /oauth/twitter` to work. Since they are not related to OAuth, I will add the functions in the `server\src\config.ts` file.
 
 ```ts
 import { PrismaClient, User } from "@prisma/client"
@@ -717,7 +718,7 @@ export function addCookieToRes(res: Response, user: User, accessToken: string) {
   });
 }
 ```
-Import the functions and use them in the `server\src\oauth2.ts`
+Import the functions and use them in the `server\src\oauth2.ts`:
 ```ts
 import { prisma, CLIENT_URL, addResCookie } from "./config";
 
@@ -757,7 +758,7 @@ export async function twitterOauth(req: Request<any, any, any, {code:string}>, r
 }
 ```
 
-And finally, add the me query in the `server\src\index.ts` file.
+And finally, add the `me` query in the `server\src\index.ts` file.
 
 ```ts
 import { CLIENT_URL, COOKIE_NAME, JWT_SECRET, prisma, SERVER_PORT } from "./config";
@@ -809,9 +810,11 @@ app.get('/me', async (req, res)=>{
 app.get("/oauth/twitter", twitterOauth);
 app.listen(SERVER_PORT, () => console.log(`Server listening on port ${SERVER_PORT}`))
 ```
-Its done now! lets see what happens when we click the twitter button in our client and authorize app in twitter. We see our twitter username in there instead of the twitter button.
+Its done now! Let's see what happens when we click the Twitter button in our client and authorize the app there.
 
 <img src='images/9.png'>
 
+We see our Twitter username in there instead of the Twitter button now, which shows that the `me` query is being executed successfully. As a result, we now have a working user authentication system, via Twitter OAuth 2.0, in our minimal full-stack web application. 
+
 ## Conclusion
-Thanks for reading! [This](https://github.com/Reinforz/twitter-oauth2-blog) is the github repository with all the codes. Find more fun things you can do with the twitter api [here](https://developer.twitter.com/en/docs/api-reference-index). Another example implementation of authentication via twitter oauth can be found [here](https://github.com/imoxto/imodit).
+Thanks for reading! [This](https://github.com/Reinforz/twitter-oauth2-blog) is the github repository with all the codes. Find more fun things you can do with the Twitter api [here](https://developer.twitter.com/en/docs/api-reference-index). Another example implementation of authentication via Twitter OAuth 2.0 can be found [here](https://github.com/imoxto/imodit).
