@@ -19,6 +19,7 @@
       - [Getting the Twitter User from access token](#getting-the-twitter-user-from-access-token)
       - [Checking if they work](#checking-if-they-work)
   - [Finishing the web app](#finishing-the-web-app)
+  - [Conclusion](#conclusion)
 
 ## Introduction
 Here we will implement authentication using twitter oauth 2.0 on a minimal working web application. We will not be using passport or any other similar libraries. The stacks of this app will be:
@@ -643,7 +644,6 @@ app.get("/ping", (_, res) => res.json("pong"));
 
 // activate twitterOauth function when visiting the route 
 app.get("/oauth/twitter", twitterOauth);
-
 app.listen(SERVER_PORT, () => console.log(`Server listening on port ${SERVER_PORT}`))
 ```
 Now run the client and server, and look at the server console on what happens if we click on the twitter button in the frontend and authorize the app.
@@ -709,6 +709,10 @@ export function addCookieToRes(res: Response, user: User, accessToken: string) {
 ```
 Import the functions and use them in the `server\src\oauth2.ts`
 ```ts
+import { prisma, CLIENT_URL, addResCookie } from "./config";
+
+...
+
 // the function which will be called when twitter redirects to the server at https://www.localhost:3001/oauth/twitter
 export async function twitterOauth(req: Request<any, any, any, {code:string}>, res: Response) {
   const code = req.query.code;
@@ -742,3 +746,61 @@ export async function twitterOauth(req: Request<any, any, any, {code:string}>, r
   return res.redirect(CLIENT_URL);
 }
 ```
+
+And finally, add the me query in the `server\src\index.ts` file.
+
+```ts
+import { CLIENT_URL, COOKIE_NAME, JWT_SECRET, prisma, SERVER_PORT } from "./config";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import express from "express";
+import jwt from 'jsonwebtoken'
+import { getTwitterUser, twitterOauth } from "./oauth2";
+import { User } from "@prisma/client";
+
+const app = express();
+const origin= [CLIENT_URL];
+app.use(cookieParser());
+app.use(cors({
+  origin,
+  credentials: true
+}))
+app.get("/ping", (_, res) => res.json("pong"));
+
+type UserJWTPayload = Pick<User, 'id'|'type'> & {accessToken: string}
+
+app.get('/me', async (req, res)=>{
+  try {
+    const token = req.cookies[COOKIE_NAME];
+    if (!token) {
+      throw new Error("Not Authenticated");
+    }
+    const payload = await jwt.verify(token, JWT_SECRET) as UserJWTPayload;
+    const userFromDb = await prisma.user.findUnique({
+      where: { id: payload?.id },
+    });
+    if (!userFromDb) throw new Error("Not Authenticated");
+    if (userFromDb.type === "twitter") {
+      if (!payload.accessToken) {
+        throw new Error("Not Authenticated");
+      }
+      const twUser = await getTwitterUser(payload.accessToken);
+      if (twUser?.id !== userFromDb.id) {
+        throw new Error("Not Authenticated");
+      }
+    }
+    res.json(userFromDb)
+  } catch (err) {
+    res.status(401).json("Not Authenticated")
+  }
+})
+
+// activate twitterOauth function when visiting the route 
+app.get("/oauth/twitter", twitterOauth);
+app.listen(SERVER_PORT, () => console.log(`Server listening on port ${SERVER_PORT}`))
+```
+Its done now! lets see what happens when we click the twitter button in our client and authorize app in twitter. We see our twitter username in there instead of the twitter button.
+<img src='images/9.png'>
+
+## Conclusion
+Thanks for reading! [This](https://github.com/Reinforz/twitter-oauth2-blog) is the github repository with all the codes. Find more fun things you can do with the twitter api [here](https://developer.twitter.com/en/docs/api-reference-index). Another example implementation of authentication via twitter oauth can be found [here](https://github.com/imoxto/imodit).

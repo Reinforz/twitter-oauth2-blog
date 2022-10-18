@@ -1,6 +1,5 @@
-import { prisma } from "./config";
+import { prisma, CLIENT_URL, addResCookie } from "./config";
 import axios from "axios";
-import { CLIENT_URL, addResCookie } from "./config";
 import { Request, Response } from "express";
 
 const TWITTER_OAUTH_CLIENT_ID = "T1dLaHdFSWVfTnEtQ2psZThTbnI6MTpjaQ";
@@ -97,7 +96,7 @@ export async function twitterOauth(req: Request, res: Response) {
     update: {
       id: twitterUser.id,
     },
-    where: {  id: twitterUser.id},
+    where: { id: twitterUser.id },
   });
 
   addResCookie({
