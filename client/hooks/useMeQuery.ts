@@ -16,7 +16,7 @@ export function useMeQuery() {
   useEffect(() => {
     setLoading(true);
     axios
-      .get<any, AxiosResponse<User>>(`https://www.localhost:3001/me`, {
+      .get<any, AxiosResponse<User>>(`http://www.localhost:3001/me`, {
         withCredentials: true,
       })
       .then((v) => {

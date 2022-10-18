@@ -23,10 +23,10 @@
 
 ## What will we learn
 Here, we will learn to implement authentication using Twitter OAuth 2.0 on a minimal working full-stack web application. We will not be using Passport.js or similar libraries to handle authentication for us. As a result, we will understand the OAuth 2.0 flow better. We will also learn about the following stacks:
-- [express.js] backend framework
-- [prisma] to create and login users, you can really use anything to communicate with any database.
-- [next.js] for the frontend
-- [typescript] (optional) type-safety for javascript
+- [express.js](https://expressjs.com/) backend framework
+- [prisma](https://www.prisma.io/) to create and login users, you can really use anything to communicate with any database.
+- [next.js](https://nextjs.org/), a [React.js](https://reactjs.org/) framework, for the frontend
+- [typescript](https://www.typescriptlang.org/) (optional) type-safety for javascript
 
 ## Requirements
 Anyone with a basic knowledge of javascript can follow along with this blog.

@@ -1,39 +1,48 @@
-import { authenticate, CLIENT_URL, SERVER_PORT } from "./config";
+import { CLIENT_URL, COOKIE_NAME, JWT_SECRET, prisma, SERVER_PORT } from "./config";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
-import { twitterOauth } from "./oauth2";
-import fs from 'fs'
-import https from 'https'
+import jwt from 'jsonwebtoken'
+import { getTwitterUser, twitterOauth } from "./oauth2";
+import { User } from "@prisma/client";
 
 const app = express();
-
-const origin = [CLIENT_URL];
-
+const origin= [CLIENT_URL];
 app.use(cookieParser());
 app.use(cors({
   origin,
   credentials: true
 }))
-
 app.get("/ping", (_, res) => res.json("pong"));
 
-app.get("/oauth/twitter", twitterOauth);
+type UserJWTPayload = Pick<User, 'id'|'type'> & {accessToken: string}
 
-app.get("/me", async (req, res)=> {
+app.get('/me', async (req, res)=>{
   try {
-    const user = await authenticate(req)
-    res.status(200).json(user)
+    const token = req.cookies[COOKIE_NAME];
+    if (!token) {
+      throw new Error("Not Authenticated");
+    }
+    const payload = await jwt.verify(token, JWT_SECRET) as UserJWTPayload;
+    const userFromDb = await prisma.user.findUnique({
+      where: { id: payload?.id },
+    });
+    if (!userFromDb) throw new Error("Not Authenticated");
+    if (userFromDb.type === "twitter") {
+      if (!payload.accessToken) {
+        throw new Error("Not Authenticated");
+      }
+      const twUser = await getTwitterUser(payload.accessToken);
+      if (twUser?.id !== userFromDb.id) {
+        throw new Error("Not Authenticated");
+      }
+    }
+    res.json(userFromDb)
   } catch (err) {
-    res.status(401).json(null)
+    res.status(401).json("Not Authenticated")
   }
-});
+})
 
-// app.listen(SERVER_PORT, () => console.log(`Server listening on port ${SERVER_PORT}`))
-
-const options = {
-  key: fs.readFileSync("../localhost-key.pem"),
-  cert: fs.readFileSync("../localhost.pem"),
-};
-const server = https.createServer(options, app);
-server.listen(SERVER_PORT, () => console.log(`Server listening on port ${SERVER_PORT}`));
+// activate twitterOauth function when visiting the route 
+app.get("/oauth/twitter", twitterOauth);
+app.listen(SERVER_PORT, () => console.log(`Server listening on port ${SERVER_PORT}`))
