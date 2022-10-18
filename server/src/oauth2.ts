@@ -18,6 +18,7 @@ export const twitterOauthTokenParams = {
   grant_type: "authorization_code",
 };
 
+// the shape of the object we should recieve from twitter
 type TwitterTokenResponse = {
   token_type: "bearer";
   expires_in: 7200;
