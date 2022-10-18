@@ -172,7 +172,7 @@ After installing the dependencies we need, make a few files to have a minimal ru
 
   export const prisma = new PrismaClient()
   ```
-- `server/.env` to setup the port, client url and database url for the server. Make sure to ignore this file if you are working with version control
+- `server/.env` to setup the port, client URL and database URL for the server. Make sure to ignore this file if you are working with version control
   ```dotenv
   DATABASE_URL=postgres://postgres:postgres@localhost:5432/twitter-oauth2
   CLIENT_URL=http://www.localhost:3000
@@ -262,7 +262,7 @@ export function TwitterOauthButton() {
   );
 }
 ```
-After adding the above code in `client\components\TwitterOauthButton.tsx`, we will add a twitter svg icon (from online resources like [this](https://icons8.com/icons/set/twitter)) on path `client\public\twitter.svg`.
+After adding the above code in `client\components\TwitterOauthButton.tsx`, we will add a twitter SVG icon (from online resources like [this](https://icons8.com/icons/set/twitter)) on path `client\public\twitter.svg`.
 Then we will import the component on the homepage:
 ```ts
 import { TwitterOauthButton } from "../components/TwitterOauthButton";
@@ -402,7 +402,7 @@ a {
 }
 ```
 
-Thats all we have to do on our client-side. The final homepage should look like this:
+That is all we have to do on our client-side. The final homepage should look like this:
 
 <img src='images/7.png'>
 
@@ -439,7 +439,7 @@ export async function twitterOauth(req: Request<any, any, any, {code:string}>, r
 }
 ```
 
-Before doing any of that make sure we the Twitter oauth client secret in our `.env` file. We will also add a jwt secret there so that we can encrypt the cookie we send to the client. The final `.env` file should look like this:
+Before doing any of that make sure we the Twitter OAuth client secret in our `.env` file. We will also add a JWT secret there so that we can encrypt the cookie we send to the client. The final `.env` file should look like this:
 ```env
 DATABASE_URL=postgres://postgres:postgres@localhost:5432/twitter-oauth2
 CLIENT_URL=http://www.localhost:3000
@@ -534,7 +534,7 @@ export async function getTwitterUser(accessToken: string): Promise<TwitterUser |
 ```
 
 #### Checking if they work
-Let's see if they succesfully gets us the user. After adding all the code in the `server\src\oauth2.ts` file it should look like this:
+Let's see if they successfully gets us the user. After adding all the code in the `server\src\oauth2.ts` file it should look like this:
 ```ts
 import { CLIENT_URL } from "./config";
 import axios from "axios";
@@ -817,4 +817,4 @@ Its done now! Let's see what happens when we click the Twitter button in our cli
 We see our Twitter username in there instead of the Twitter button now, which shows that the `me` query is being executed successfully. As a result, we now have a working user authentication system, via Twitter OAuth 2.0, in our minimal full-stack web application. 
 
 ## Conclusion
-Thanks for reading! [This](https://github.com/Reinforz/twitter-oauth2-blog) is the github repository with all the codes. Find more fun things you can do with the Twitter api [here](https://developer.twitter.com/en/docs/api-reference-index). Another example implementation of authentication via Twitter OAuth 2.0 can be found [here](https://github.com/imoxto/imodit).
+Thanks for reading! [This](https://github.com/Reinforz/twitter-oauth2-blog) is the Github repository with all the codes. Find more fun things you can do with the Twitter API [here](https://developer.twitter.com/en/docs/api-reference-index). Another example implementation of authentication via Twitter OAuth 2.0 can be found [here](https://github.com/imoxto/imodit).
