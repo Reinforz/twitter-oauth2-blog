@@ -1,7 +1,6 @@
 # Implementing Authentication with Twitter Oauth 2.0 using Typescript, Node js, Express js and Next js in a Full Stack Application
 
 ## Table of contents
-- [Implementing Authentication with Twitter Oauth 2.0 using Typescript, Node js, Express js and Next js in a Full Stack Application](#implementing-authentication-with-twitter-oauth-20-using-typescript-node-js-express-js-and-next-js-in-a-full-stack-application)
   - [Table of contents](#table-of-contents)
   - [What will we learn](#what-will-we-learn)
   - [Requirements](#requirements)
