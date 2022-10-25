@@ -47,7 +47,6 @@ export async function getTwitterOAuthToken(code: string) {
 
     return res.data;
   } catch (err) {
-    console.error(err);
     return null;
   }
 }
@@ -73,15 +72,12 @@ export async function getTwitterUser(accessToken: string): Promise<TwitterUser |
 
     return res.data.data ?? null;
   } catch (err) {
-    console.error(err);
     return null;
   }
 }
 
 // the function which will be called when twitter redirects to the server at https://www.localhost:3001/oauth/twitter
 export async function twitterOauth(req: Request<any, any, any, { code: string }>, res: Response) {
-  console.log(req.query);
-
   const code = req.query.code;
 
   // 1. get the access token with the code

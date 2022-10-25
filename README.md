@@ -261,7 +261,7 @@ export function TwitterOauthButton() {
   );
 }
 ```
-> **Note**: We are hard coding `code_challenge` and for simplicity. You can randomly generate it.
+> **Note**: We are hard coding `code_challenge` and `code_verifier` for simplicity. You can randomly generate it.
 
 After adding the above code in `client\components\TwitterOauthButton.tsx`, we will add a twitter SVG icon (from online resources like [this](https://icons8.com/icons/set/twitter)) on path `client\public\twitter.svg`.
 Then we will import the component on the homepage:
@@ -466,6 +466,7 @@ const BasicAuthToken = Buffer.from(`${TWITTER_OAUTH_CLIENT_ID}:${TWITTER_OAUTH_C
 // filling up the query parameters needed to request for getting the token
 export const twitterOauthTokenParams = {
   client_id: TWITTER_OAUTH_CLIENT_ID,
+  // based on code_challenge
   code_verifier: "8KxxO-RPl0bLSxX5AWwgdiFbMnry_VOKzFeIlVA7NoA",
   redirect_uri: `http://www.localhost:3001/oauth/twitter`,
   grant_type: "authorization_code",
@@ -586,7 +587,6 @@ export async function getTwitterOAuthToken(code: string) {
 
     return res.data;
   } catch (err) {
-    console.error(err);
     return null;
   }
 }
@@ -612,7 +612,6 @@ export async function getTwitterUser(accessToken: string): Promise<TwitterUser |
 
     return res.data.data ?? null;
   } catch (err) {
-    console.error(err);
     return null;
   }
 }
