@@ -17,7 +17,7 @@ const BasicAuthToken = Buffer.from(`${TWITTER_OAUTH_CLIENT_ID}:${TWITTER_OAUTH_C
 // filling up the query parameters needed to request for getting the token
 export const twitterOauthTokenParams = {
   client_id: TWITTER_OAUTH_CLIENT_ID,
-  code_verifier: "challenge",
+  code_verifier: "8KxxO-RPl0bLSxX5AWwgdiFbMnry_VOKzFeIlVA7NoA",
   redirect_uri: `http://www.localhost:3001/oauth/twitter`,
   grant_type: "authorization_code",
 };
@@ -47,7 +47,6 @@ export async function getTwitterOAuthToken(code: string) {
 
     return res.data;
   } catch (err) {
-    console.error(err);
     return null;
   }
 }
@@ -73,38 +72,36 @@ export async function getTwitterUser(accessToken: string): Promise<TwitterUser |
 
     return res.data.data ?? null;
   } catch (err) {
-    console.error(err);
     return null;
   }
 }
 
 // the function which will be called when twitter redirects to the server at https://www.localhost:3001/oauth/twitter
-export async function twitterOauth(req: Request<any, any, any, {code:string}>, res: Response) {
+export async function twitterOauth(req: Request<any, any, any, { code: string }>, res: Response) {
   const code = req.query.code;
 
   // 1. get the access token with the code
   const twitterOAuthToken = await getTwitterOAuthToken(code);
-  
+
   if (!twitterOAuthToken) {
     // redirect if no auth token
     return res.redirect(CLIENT_URL);
   }
-  
+
   // 2. get the twitter user using the access token
   const twitterUser = await getTwitterUser(twitterOAuthToken.access_token);
-  
+
   if (!twitterUser) {
     // redirect if no twitter user
     return res.redirect(CLIENT_URL);
   }
-  
-  
+
   // 3. upsert the user in our db
-  const user = await upsertUser(twitterUser)
-  
+  const user = await upsertUser(twitterUser);
+
   // 4. create cookie so that the server can validate the user
-  addCookieToRes(res, user, twitterOAuthToken.access_token)
-  
+  addCookieToRes(res, user, twitterOAuthToken.access_token);
+
   // 5. finally redirect to the client
   return res.redirect(CLIENT_URL);
 }
