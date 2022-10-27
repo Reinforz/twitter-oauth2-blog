@@ -1,4 +1,4 @@
-# Implementing Authentication with Twitter Oauth 2.0 using Typescript, Node js, Express js and Next js in a Full Stack Application
+# Implementing Authentication with Twitter OAuth 2.0 using Typescript, Node js, Express js and Next js in a Full Stack Application
 
 ## Table of contents
   - [Table of contents](#table-of-contents)
@@ -7,7 +7,7 @@
   - [Project Setup](#project-setup)
     - [Client setup](#client-setup)
     - [Server setup](#server-setup)
-  - [Twitter Oauth2 Implementation](#twitter-oauth2-implementation)
+  - [Twitter OAuth2 Implementation](#twitter-oauth2-implementation)
     - [Setup twitter user authentication settings](#setup-twitter-user-authentication-settings)
     - [Client](#client)
       - [Frontend authentication button](#frontend-authentication-button)
@@ -206,7 +206,7 @@ We should now be able to ping our server at http://localhost:3001/ping
 
 <img src='https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/2.png'>
 
-## Twitter Oauth2 Implementation
+## Twitter OAuth2 Implementation
 We are ready to implement authentication via Twitter OAuth 2.0 into our app. We will follow [this](https://developer.twitter.com/en/docs/authentication/oauth-2-0/authorization-code) approach to do so. 
 Firstly, we have to make an app on Twitter.
 ### Setup twitter user authentication settings
@@ -243,8 +243,8 @@ function getTwitterOauthUrl() {
     client_id: TWITTER_CLIENT_ID,
     state: "state",
     response_type: "code",
-    code_challenge: "challenge",
-    code_challenge_method: "plain",
+    code_challenge: "y_SfRG4BmOES02uqWeIkIgLQAlTBggyf_G7uKT51ku8",
+    code_challenge_method: "S256",
     scope: ["users.read", "tweet.read", "follows.read", "follows.write"].join(" "), // add/remove scopes as needed
   };
   const qs = new URLSearchParams(options).toString();
@@ -261,6 +261,8 @@ export function TwitterOauthButton() {
   );
 }
 ```
+> **Note**: We are hard coding `code_challenge` and `code_verifier` for simplicity. You can randomly generate it.
+
 After adding the above code in `client\components\TwitterOauthButton.tsx`, we will add a twitter SVG icon (from online resources like [this](https://icons8.com/icons/set/twitter)) on path `client\public\twitter.svg`.
 Then we will import the component on the homepage:
 ```ts
@@ -283,7 +285,7 @@ Clicking on the Twitter icon will lead us to the Twitter page where we can autho
 
 <img src='https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/6.5.png'>
 
-Of course clicking on the `authorize app` button lead to a `Cannot GET /oauth/twitter` response as we havent implemented the backend yet.
+Of course, clicking on the `authorize app` button leads to a `Cannot GET /oauth/twitter` response, as we haven't implemented the backend yet.
 
 #### Me query
 Let's request for the current logged in user from the frontend through a hook, `client\hooks\useMeQuery.ts`:
@@ -352,7 +354,7 @@ The above is how the final `client\pages\index.tsx` will look like. Go to http:/
 
 #### Styling
 
-Lets just add some basic styling while we are at it by modifying the `client\styles\globals.css` file:
+Let's just add some basic styling while we are at it by modifying the `client\styles\globals.css` file:
 ```css
 html,
 body {
@@ -464,7 +466,8 @@ const BasicAuthToken = Buffer.from(`${TWITTER_OAUTH_CLIENT_ID}:${TWITTER_OAUTH_C
 // filling up the query parameters needed to request for getting the token
 export const twitterOauthTokenParams = {
   client_id: TWITTER_OAUTH_CLIENT_ID,
-  code_verifier: "challenge",
+  // based on code_challenge
+  code_verifier: "8KxxO-RPl0bLSxX5AWwgdiFbMnry_VOKzFeIlVA7NoA",
   redirect_uri: `http://www.localhost:3001/oauth/twitter`,
   grant_type: "authorization_code",
 };
@@ -554,7 +557,7 @@ const BasicAuthToken = Buffer.from(`${TWITTER_OAUTH_CLIENT_ID}:${TWITTER_OAUTH_C
 // filling up the query parameters needed to request for getting the token
 export const twitterOauthTokenParams = {
   client_id: TWITTER_OAUTH_CLIENT_ID,
-  code_verifier: "challenge",
+  code_verifier: "8KxxO-RPl0bLSxX5AWwgdiFbMnry_VOKzFeIlVA7NoA",
   redirect_uri: `http://www.localhost:3001/oauth/twitter`,
   grant_type: "authorization_code",
 };
@@ -584,7 +587,6 @@ export async function getTwitterOAuthToken(code: string) {
 
     return res.data;
   } catch (err) {
-    console.error(err);
     return null;
   }
 }
@@ -610,7 +612,6 @@ export async function getTwitterUser(accessToken: string): Promise<TwitterUser |
 
     return res.data.data ?? null;
   } catch (err) {
-    console.error(err);
     return null;
   }
 }
@@ -700,6 +701,7 @@ export const COOKIE_NAME = 'oauth2_token'
 // cookie setting options
 const cookieOptions: CookieOptions = {
   httpOnly: true,
+  secure: process.env.NODE_ENV === 'production'
   sameSite: "strict"
 }
 
@@ -729,7 +731,6 @@ export async function twitterOauth(req: Request<any, any, any, {code:string}>, r
 
   // 1. get the access token with the code
   const twitterOAuthToken = await getTwitterOAuthToken(code);
-  console.log(twitterOAuthToken);
   
   if (!twitterOAuthToken) {
     // redirect if no auth token
@@ -738,7 +739,6 @@ export async function twitterOauth(req: Request<any, any, any, {code:string}>, r
   
   // 2. get the twitter user using the access token
   const twitterUser = await getTwitterUser(twitterOAuthToken.access_token);
-  console.log(twitterUser);
   
   if (!twitterUser) {
     // redirect if no twitter user
@@ -756,6 +756,7 @@ export async function twitterOauth(req: Request<any, any, any, {code:string}>, r
   return res.redirect(CLIENT_URL);
 }
 ```
+> **Note**: We are sending the access token in the cookie for simplicity. For a web application, we should store it somewhere more secure, like a database.
 
 And finally, add the `me` query in the `server\src\index.ts` file.
 
@@ -809,7 +810,7 @@ app.get('/me', async (req, res)=>{
 app.get("/oauth/twitter", twitterOauth);
 app.listen(SERVER_PORT, () => console.log(`Server listening on port ${SERVER_PORT}`))
 ```
-Its done now! Let's see what happens when we click the Twitter button in our client and authorize the app there.
+It is done now! Let's see what happens when we click the Twitter button on our client and authorize the app there.
 
 <img src='https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/9.png'>
 
