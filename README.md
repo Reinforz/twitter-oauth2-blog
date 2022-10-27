@@ -817,3 +817,8 @@ We see our Twitter username in there instead of the Twitter button now, which sh
 
 ## Conclusion
 Thanks for reading! [This](https://github.com/Reinforz/twitter-oauth2-blog) is the Github repository with all the codes. Find more fun things you can do with the Twitter API [here](https://developer.twitter.com/en/docs/api-reference-index). Another example implementation of authentication via Twitter OAuth 2.0 can be found [here](https://github.com/imoxto/imodit).
+
+
+<div style="text-align: right; font-style: italic">
+Written by <a href="https://github.com/imoxto">Rafid Hamid</a>
+</div>
