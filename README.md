@@ -1,6 +1,11 @@
-# Implementing Authentication with Twitter OAuth 2.0 using Typescript, Node js, Express js and Next js in a Full Stack Application
+# Implementing Authentication with Twitter OAuth 2.0 using Typescript, Express.js and Next.js
+
+## Implementing Authentication with Twitter OAuth 2.0 using Typescript, Node.js, Express.js and Next.js in a Full Stack Application
 
 ## Table of contents
+
+- [Implementing Authentication with Twitter OAuth 2.0 using Typescript, Express.js and Next.js](#implementing-authentication-with-twitter-oauth-20-using-typescript-expressjs-and-nextjs)
+  - [Implementing Authentication with Twitter OAuth 2.0 using Typescript, Node.js, Express.js and Next.js in a Full Stack Application](#implementing-authentication-with-twitter-oauth-20-using-typescript-nodejs-expressjs-and-nextjs-in-a-full-stack-application)
   - [Table of contents](#table-of-contents)
   - [What will we learn](#what-will-we-learn)
   - [Requirements](#requirements)
@@ -74,7 +79,7 @@ export default Home;
 ```
 Starting the client with our command `yarn client:dev` and going to the address at http://www.localhost:3000/ should display a webpage saying `Hello!`
 
-<img src='https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/1.png'>
+![Web page saying hello!](https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/1.png)
 
 Now that the frontend is set up, let's move on to our backend.
 
@@ -204,7 +209,7 @@ Now migrate the database using the `yarn migrate-db` command, and then we can ru
 
 We should now be able to ping our server at http://localhost:3001/ping
 
-<img src='https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/2.png'>
+![Response of the request is "pong"](https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/2.png)
 
 ## Twitter OAuth2 Implementation
 We are ready to implement authentication via Twitter OAuth 2.0 into our app. We will follow [this](https://developer.twitter.com/en/docs/authentication/oauth-2-0/authorization-code) approach to do so. 
@@ -213,13 +218,13 @@ Firstly, we have to make an app on Twitter.
 Head over to [twitter's developer portal](https://developer.twitter.com/en/portal/dashboard) and make a project and a development app in the project with any name. Twitter will show you the things needed. It may take a few hours to get approval from Twitter to make these apps. Once it is done, head over to the settings page of the app to set some necessary fields.
 Set up or edit the user authentication as needed by your app.
 
-<img src='https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/3.png'>
+![Edit user authentication set up](https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/3.png)
 
 As I only need to read profile information for this minimal web app, these are the settings I used:
 
-<img src='https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/4.png'>
+![App permissions: Read, no request emails; App type: Web app](https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/4.png)
 
-<img src='https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/5.png'>
+![Callback URI: http://www.localhost:3001/oauth/twitter, Website URL: http://www.localhost:3000](https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/5.png)
 
 Save the Twitter Client ID and client secret securely.
 > **Note**: http://www.localhost:3000 works but not http://localhost:3000. 
@@ -279,11 +284,11 @@ const Home: NextPage = () => {
 ```
 This is how it should look like afterwards:
 
-<img src='https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/6.png'>
+![Webpage with Twitter icon and text, "Hello! twitter"](https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/6.png)
 
 Clicking on the Twitter icon will lead us to the Twitter page where we can authorize the app:
 
-<img src='https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/6.5.png'>
+![Twitter interface asking whether to authorize app or cancel](https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/6.5.png)
 
 Of course, clicking on the `authorize app` button leads to a `Cannot GET /oauth/twitter` response, as we haven't implemented the backend yet.
 
@@ -348,7 +353,7 @@ export default Home;
 ```
 The above is how the final `client\pages\index.tsx` will look like. Go to http://www.localhost:3000 and inspect the network window of the browser while the page is loading. You should see the Me query being executed there.
 
-<img src='https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/6.6.png'>
+![Information about the query GET http://www.localhost:3001/me which failed with status 404](https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/6.6.png)
 
 > Its 404 because we havent implemented it in the backend
 
@@ -405,7 +410,7 @@ a {
 
 That is all we have to do on our client-side. The final homepage should look like this:
 
-<img src='https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/7.png'>
+![Webpage saying to log in by clicking on the below twitter logo button](https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/7.png)
 
 
 ### Server
@@ -657,7 +662,7 @@ app.listen(SERVER_PORT, () => console.log(`Server listening on port ${SERVER_POR
 ```
 Now run the client and server, and look at the server console on what happens if we click on the Twitter button in the frontend and authorize the app.
 
-<img src='https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/8.png'>
+![successfully fetching user and access token fron twitter](https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/8.png)
 
 We successfully got the user from Twitter now!
 The most important part, i.e. getting the user from Twitter, is done. Now we can finish up our project.
@@ -812,7 +817,7 @@ app.listen(SERVER_PORT, () => console.log(`Server listening on port ${SERVER_POR
 ```
 It is done now! Let's see what happens when we click the Twitter button on our client and authorize the app there.
 
-<img src='https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/9.png'>
+![Successful login and setting up cookies in FE](https://raw.githubusercontent.com/Reinforz/twitter-oauth2-blog/main/images/9.png)
 
 We see our Twitter username in there instead of the Twitter button now, which shows that the `me` query is being executed successfully. As a result, we now have a working user authentication system, via Twitter OAuth 2.0, in our minimal full-stack web application. 
 
@@ -820,6 +825,4 @@ We see our Twitter username in there instead of the Twitter button now, which sh
 Thanks for reading! [This](https://github.com/Reinforz/twitter-oauth2-blog) is the Github repository with all the codes. Find more fun things you can do with the Twitter API [here](https://developer.twitter.com/en/docs/api-reference-index). Another example implementation of authentication via Twitter OAuth 2.0 can be found [here](https://github.com/imoxto/imodit).
 
 
-<div style="text-align: right; font-style: italic">
-Written by <a href="https://github.com/imoxto">Rafid Hamid</a>
-</div>
+*Written by [Rafid Hamid](https://github.com/imoxto)*
